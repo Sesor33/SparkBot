@@ -1,0 +1,4 @@
+# Ignore secret stuff
+src/secret/
+__pycache__/
+*.mp3
