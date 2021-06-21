@@ -37,11 +37,25 @@ async def twitch(ctx):
 
 @client.command()
 async def version(ctx):
-    clientName = client.user.name
-    server = ctx.message.author.guild.name
     version = 0.2
-    await ctx.send(str(clientName) + " version " + str(version))
-    await ctx.send("Running on the Server: " + str(server))
+    embed = discord.Embed(title = "SparkBot")
+    embed.set_thumbnail(url = client.user.avatar_url)
+    embed.add_field(name = "Version", value = f"{version}", inline = True)
+    embed.add_field(name = "Info", value = f"Running on the Server: {ctx.message.author.guild.name}", inline = False)
+    embed.add_field(name = "Stats", value = f"Discord API Latency: {(client.latency * 1000):.2f}ms", inline = False)
+    embed.set_footer(icon_url = ctx.author.avatar_url, text = f"Queried by {ctx.author.name}")
+    await ctx.send(embed=embed)
+
+@client.command()
+async def whois(ctx, member : discord.Member):
+    embed = discord.Embed(title = member.name, description = member.mention, color = discord.Colour.red())
+    embed.set_thumbnail(url = member.avatar_url)
+    embed.add_field(name = "ID", value = member.id, inline = True)
+    embed.add_field(name = "Role", value = member.top_role.mention, inline = True)
+    embed.set_footer(icon_url = ctx.author.avatar_url, text = f"Queried by {ctx.author.name}" )
+    await ctx.send(embed=embed)
+
+
 
 #Voice
 
