@@ -18,26 +18,25 @@ async def on_ready():
     print(client.user.id)
     print('All systems online!')
 
-@client.command()
-async def avatar(ctx):
-    url = ctx.message.author.avatar_url
-    await ctx.send(str(url))
+@client.command(brief="Gets the avatar URL of a member")
+async def avatar(ctx, member : discord.Member):
+    await ctx.send(f"{member.avatar_url}")
 
-@client.command()
+@client.command(brief="Test command, says who YOU are")
 async def whoami(ctx):
     await ctx.send('You are ' + str(ctx.message.author))
 
-@client.command()
+@client.command(brief="Ping? Pong.")
 async def ping(ctx):
     await ctx.send('pong')
 
-@client.command()
+@client.command(brief="Shouts out your Twitch link")
 async def twitch(ctx):
     await ctx.send('Follow me on Twitch at https://www.twitch.tv/Tech_Coyote')
 
-@client.command()
-async def version(ctx):
-    version = 0.2
+@client.command(brief="Gives info about SparkBot")
+async def info(ctx):
+    version = 0.3
     embed = discord.Embed(title = "SparkBot")
     embed.set_thumbnail(url = client.user.avatar_url)
     embed.add_field(name = "Version", value = f"{version}", inline = True)
@@ -46,7 +45,7 @@ async def version(ctx):
     embed.set_footer(icon_url = ctx.author.avatar_url, text = f"Queried by {ctx.author.name}")
     await ctx.send(embed=embed)
 
-@client.command()
+@client.command(brief="Gets info on a member")
 async def whois(ctx, member : discord.Member):
     embed = discord.Embed(title = member.name, description = member.mention, color = discord.Colour.red())
     embed.set_thumbnail(url = member.avatar_url)
@@ -83,10 +82,11 @@ async def disconnect(ctx):
 
 @client.command(pass_context=True, brief="This will play a song 'play [url]'", aliases=['pl','p'])
 async def play(ctx, url: str):
-    song_there = os.path.isfile("song.mp3")
+    songName = f"{ctx.guild.id}.mp3"
+    song_there = os.path.isfile(songName)
     try:
         if song_there:
-            os.remove("song.mp3")
+            os.remove(songName)
     except PermissionError:
         await ctx.send("Wait for the current playing music end or use the 'stop' command")
         return
@@ -105,19 +105,21 @@ async def play(ctx, url: str):
         ydl.download([url])
     for file in os.listdir("./"):
         if file.endswith(".mp3"):
-            os.rename(file, 'song.mp3')
+            os.rename(file, f"{ctx.guild.id}.mp3")
+            print(songName)
     voice = get(client.voice_clients, guild=ctx.guild)
-    voice.play(discord.FFmpegPCMAudio("song.mp3"))
+    voice.play(discord.FFmpegPCMAudio(songName))
     voice.volume = 100
     voice.is_playing()
 
 @client.command(pass_context=True, brief="Repeats last song played", aliases=['playlast','again'])
 async def repeat(ctx):
-    song_there = os.path.isfile("song.mp3")
+    songName = f"{ctx.guild.id}.mp3"
+    song_there = os.path.isfile(songName)
     try:
         if song_there:
             voice = get(client.voice_clients, guild=ctx.guild)
-            voice.play(discord.FFmpegPCMAudio("song.mp3"))
+            voice.play(discord.FFmpegPCMAudio(songName))
             voice.volume = 100
             voice.is_playing()
     except:
