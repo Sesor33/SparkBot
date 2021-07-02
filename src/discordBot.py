@@ -47,13 +47,30 @@ async def info(ctx):
 
 @client.command(brief="Gets info on a member")
 async def whois(ctx, member : discord.Member):
-    embed = discord.Embed(title = member.name, description = member.mention, color = discord.Colour.red())
+    embed = discord.Embed(title = member.name, description = member.mention, color = discord.Colour.blue())
     embed.set_thumbnail(url = member.avatar_url)
     embed.add_field(name = "ID", value = member.id, inline = True)
     embed.add_field(name = "Role", value = member.top_role.mention, inline = True)
     embed.set_footer(icon_url = ctx.author.avatar_url, text = f"Queried by {ctx.author.name}" )
     await ctx.send(embed=embed)
 
+@client.command(brief="Kicks member")
+@commands.has_permissions(kick_members = True)
+async def kick(ctx,member : discord.Member,*,reason= "No reason given"):
+    embed = discord.Embed(title = "Moderation", description = "Kicked "+member.name, color = discord.Colour.red())
+    embed.add_field(name = "ID", value = member.id, inline = True)
+    await member.send(f"You have been kicked for: {reason}")
+    await member.kick(reason=reason)
+    await ctx.send(embed=embed)
+
+@client.command(brief="Bans member")
+@commands.has_permissions(ban_members = True)
+async def ban(ctx,member : discord.Member,*,reason= "No reason given"):
+    embed = discord.Embed(title = "Moderation", description = "Banned "+member.name, color = discord.Colour.red())
+    embed.add_field(name = "ID", value = member.id, inline = True)
+    await member.send(f"You have been banned for: {reason}")
+    await member.ban(reason=reason)
+    await ctx.send(embed=embed)
 
 
 #Voice
@@ -103,10 +120,14 @@ async def play(ctx, url: str):
     }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
+        info_dict = ydl.extract_info(url, download=False)
+        embed = discord.Embed(title = "Now Playing",
+         description = info_dict.get("title", None), color = discord.Colour.green())
+        await ctx.send(embed=embed)
+
     for file in os.listdir("./"):
         if file.endswith(".mp3"):
             os.rename(file, f"{ctx.guild.id}.mp3")
-            print(songName)
     voice = get(client.voice_clients, guild=ctx.guild)
     voice.play(discord.FFmpegPCMAudio(songName))
     voice.volume = 100
