@@ -42,7 +42,7 @@ async def info(ctx):
     embed.add_field(name = "Version", value = f"{version}", inline = True)
     embed.add_field(name = "Info", value = f"Running on the Server: {ctx.message.author.guild.name}", inline = False)
     embed.add_field(name = "Stats", value = f"Discord API Latency: {(client.latency * 1000):.2f}ms", inline = False)
-    embed.set_footer(icon_url = ctx.author.avatar_url, text = f"Queried by {ctx.author.name}")
+    embed.set_footer(icon_url = ctx.author.avatar_url, text = f"Queried by {ctx.author.display_name}")
     await ctx.send(embed=embed)
 
 @client.command(brief="Gets info on a member")
@@ -51,7 +51,7 @@ async def whois(ctx, member : discord.Member):
     embed.set_thumbnail(url = member.avatar_url)
     embed.add_field(name = "ID", value = member.id, inline = True)
     embed.add_field(name = "Role", value = member.top_role.mention, inline = True)
-    embed.set_footer(icon_url = ctx.author.avatar_url, text = f"Queried by {ctx.author.name}" )
+    embed.set_footer(icon_url = ctx.author.avatar_url, text = f"Queried by {ctx.author.display_name}" )
     await ctx.send(embed=embed)
 
 @client.command(brief="Kicks member")
@@ -120,9 +120,14 @@ async def play(ctx, url: str):
     }
     with youtube_dl.YoutubeDL(ydl_opts) as ydl:
         ydl.download([url])
-        info_dict = ydl.extract_info(url, download=False)
+        info_dict = ydl.extract_info(url, download=False) #Gets video info
+        tempSec = info_dict["duration"] #Gets duration
         embed = discord.Embed(title = "Now Playing",
-         description = info_dict.get("title", None), color = discord.Colour.green())
+         description = info_dict["title"], color = discord.Colour.green()) #Embed with video info
+        embed.add_field(name = "Uploader", value = info_dict["uploader"], inline = True)
+        embed.add_field(name = "Duration", value = f"{int(tempSec/60):02d}:{tempSec%60:02d}", inline = True)
+        embed.set_thumbnail(url = info_dict["thumbnails"][0]["url"]) #Gets the thumbnail
+        embed.set_footer(icon_url = ctx.author.avatar_url, text = f"Queried by {ctx.author.display_name}")
         await ctx.send(embed=embed)
 
     for file in os.listdir("./"):
