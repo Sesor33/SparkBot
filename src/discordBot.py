@@ -1,6 +1,7 @@
 import discord
 import youtube_dl
 import os
+import glob
 from discord.ext import commands
 from discord.utils import get
 from discord import FFmpegPCMAudio
@@ -99,6 +100,7 @@ async def disconnect(ctx):
 
 @client.command(pass_context=True, brief="This will play a song 'play [url]'", aliases=['pl','p'])
 async def play(ctx, url: str):
+    global vidTitle
     songName = f"{ctx.guild.id}.mp3"
     song_there = os.path.isfile(songName)
     try:
@@ -122,6 +124,7 @@ async def play(ctx, url: str):
         ydl.download([url])
         info_dict = ydl.extract_info(url, download=False) #Gets video info
         tempSec = info_dict["duration"] #Gets duration
+        vidTitle = info_dict["title"]
         embed = discord.Embed(title = "Now Playing",
          description = info_dict["title"], color = discord.Colour.green()) #Embed with video info
         embed.add_field(name = "Uploader", value = info_dict["uploader"], inline = True)
@@ -130,9 +133,14 @@ async def play(ctx, url: str):
         embed.set_footer(icon_url = ctx.author.avatar_url, text = f"Queried by {ctx.author.display_name}")
         await ctx.send(embed=embed)
 
-    for file in os.listdir("./"):
-        if file.endswith(".mp3"):
-            os.rename(file, f"{ctx.guild.id}.mp3")
+    #for file in os.listdir("./"):
+        #print(type(file))
+        #if file.endswith(".mp3"):
+
+    files = [file for file in os.listdir("./") if file.endswith(".mp3")]
+    newest = max(files , key = os.path.getctime)
+    os.rename(newest, f"{ctx.guild.id}.mp3") #Handles multi-server audio
+
     voice = get(client.voice_clients, guild=ctx.guild)
     voice.play(discord.FFmpegPCMAudio(songName))
     voice.volume = 100
