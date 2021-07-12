@@ -9,8 +9,11 @@ from os import system
 from secret import private as p
 #Remember to pip discord[voice]
 
-client = commands.Bot(command_prefix='!')
+description = '''A discord bot to use in your gaming servers'''
 
+intents = discord.Intents.default()
+intents.members = True
+client = commands.Bot(command_prefix='!', description=description)
 
 
 @client.event
@@ -25,15 +28,15 @@ async def avatar(ctx, member : discord.Member):
 
 @client.command(brief="Test command, says who YOU are")
 async def whoami(ctx):
-    await ctx.send('You are ' + str(ctx.message.author))
+    await ctx.send('\u180EYou are ' + str(ctx.message.author))
 
 @client.command(brief="Ping? Pong.")
 async def ping(ctx):
-    await ctx.send('pong')
+    await ctx.send('\u180Epong')
 
 @client.command(brief="Shouts out your Twitch link")
 async def twitch(ctx):
-    await ctx.send('Follow me on Twitch at https://www.twitch.tv/Tech_Coyote')
+    await ctx.send('\u180EFollow me on Twitch at https://www.twitch.tv/Tech_Coyote')
 
 @client.command(brief="Gives info about SparkBot")
 async def info(ctx):
@@ -85,14 +88,14 @@ async def ban(ctx,member : discord.Member,*,reason= "No reason given"):
 async def join(ctx):
     channel = ctx.message.author.voice.channel
     if not channel:
-        await ctx.send("You are not connected to a voice channel")
+        await ctx.send("\u180EYou are not connected to a voice channel")
         return
     voice = get(client.voice_clients, guild=ctx.guild)
     if voice and voice.is_connected():
         await voice.move_to(channel)
     else:
         voice = await channel.connect()
-    await ctx.send(f"Joined {channel}")
+    await ctx.send(f"\u180EJoined {channel}")
 
 @client.command(pass_context=True, brief="Makes the bot leave your channel", aliases=['dc','leave'])
 async def disconnect(ctx):
@@ -157,7 +160,7 @@ async def repeat(ctx):
             voice.volume = 100
             voice.is_playing()
     except:
-        await ctx.send("Nothing is in buffer, play a song first")
+        await ctx.send("\u180ENothing is in buffer, play a song first")
         return
 
 @client.command(pass_context=True, brief="Pauses currently playing audio")
