@@ -34,7 +34,7 @@ class CommandErrorHandler(commands.Cog):
         elif isinstance(error, commands.CommandNotFound):
             return await ctx.send('Command not found')
 
-
+"""
 class MainCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
@@ -92,7 +92,7 @@ class MainCommands(commands.Cog):
         await member.send(f"You have been banned for: {reason}")
         await member.ban(reason=reason)
         await ctx.send(embed=embed)
-
+"""
 
 #Voice
 
@@ -207,31 +207,10 @@ class Music(commands.Cog):
         voice = get(client.voice_clients, guild=ctx.guild)
         if voice.is_playing() or voice.is_paused():
             voice.volume = vol
-#Reference commands
 
-"""
-@commands.command()
-async def voicechan(self, ctx):
-    channel = ctx.message.author.voice.channel
-    await ctx.send(str(channel))
-"""
 
-"""
-@commands.command()
-async def test(self, ctx):
-    user = ctx.message.author
-    await ctx.send(str(user))
-"""
-
-"""
-@commands.command()
-async def square(self, ctx, num):
-    val = int(num) * int(num)
-    await ctx.send(str(num) + ' squared is ' + str(val))
-"""
-
-client.add_cog(CommandErrorHandler(client))
-client.add_cog(MainCommands(client))
+#client.add_cog(CommandErrorHandler(client))
+#client.add_cog(MainCommands(client))
 client.add_cog(Music(client))
 
 @client.event
@@ -240,4 +219,11 @@ async def on_ready():
     print(client.user.id)
     print('All systems online!')
 
-client.run(p.botToken)
+for file in os.listdir("cogs"):
+    if file.endswith(".py"):
+        name = file[:-3]
+        client.load_extension(f"cogs.{name}")
+try:
+    client.run(p.botToken)
+except Exception as e:
+    print(f"Login error: {e}")
