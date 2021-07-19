@@ -9,7 +9,7 @@ from discord.utils import get
 from discord import FFmpegPCMAudio
 from os import system
 from secret import private as p
-#Remember to pip discord[voice]
+#Remember to pip discord.py[voice]
 
 description = '''A discord bot to use in your gaming servers'''
 
