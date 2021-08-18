@@ -24,12 +24,12 @@ class MainCommands(commands.Cog):
 
     @commands.command(brief='Gives info about SparkBot')
     async def info(self, ctx):
-        version = 0.3
+        version = 0.4
         embed = discord.Embed(title = 'SparkBot')
-        embed.set_thumbnail(url = client.user.avatar_url)
+        embed.set_thumbnail(url = self.bot.user.avatar_url)
         embed.add_field(name = 'Version', value = f'{version}', inline = True)
         embed.add_field(name = 'Info', value = f'Running on the Server: {ctx.message.author.guild.name}', inline = False)
-        embed.add_field(name = 'Stats', value = f'Discord API Latency: {(client.latency * 1000):.2f}ms', inline = False)
+        embed.add_field(name = 'Stats', value = f'Discord API Latency: {(self.bot.latency * 1000):.2f}ms', inline = False)
         embed.set_footer(icon_url = ctx.author.avatar_url, text = f'Queried by {ctx.author.display_name}')
         await ctx.send(embed=embed)
 
