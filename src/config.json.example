@@ -1,0 +1,14 @@
+{
+  "join_message": "Activated",
+  "description": "Gaming? Not on my watch",
+  "owners": [
+    000000000000
+  ],
+  "prefix": [
+    "!"
+  ],
+  "activity": "games!",
+  "activity_type": "playing|watching|listening|competing",
+  "status_type": "online|idle|dnd",
+  "version": "4.20"
+}

@@ -8,14 +8,16 @@ from discord.ext import commands
 from discord.utils import get
 from discord import FFmpegPCMAudio
 from os import system
+from utils import default
 from secret import private as p
 #Remember to pip discord.py[voice]
 
-description = '''A discord bot to use in your gaming servers'''
-
 intents = discord.Intents.default()
 intents.members = True
-client = commands.Bot(command_prefix='!', description=description)
+configData = default.config()
+client = commands.Bot(command_prefix = configData['prefix'], owner_ids = configData['owners'], description = configData['description'])
+
+
 
 class CommandErrorHandler(commands.Cog):
     def __init__(self, bot):
@@ -34,13 +36,6 @@ class CommandErrorHandler(commands.Cog):
         elif isinstance(error, commands.CommandNotFound):
             return await ctx.send('Command not found')
 
-
-#Voice
-
-#@commands.command()
-#async def join(self, ctx):
-#    channel = ctx.message.author.voice.channel
-#    vc = await channel.connect()
 
 @client.event
 async def on_ready():

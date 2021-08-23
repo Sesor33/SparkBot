@@ -1,10 +1,12 @@
 import discord
 from discord.ext import commands
 from discord.utils import get
+from utils import default
 
 class MainCommands(commands.Cog):
     def __init__(self, bot):
         self.bot = bot
+        self.config = default.config()
 
     @commands.command(brief='Gets the avatar URL of a member')
     async def avatar(self, ctx, member : discord.Member):
@@ -24,10 +26,9 @@ class MainCommands(commands.Cog):
 
     @commands.command(brief='Gives info about SparkBot')
     async def info(self, ctx):
-        version = 0.4
         embed = discord.Embed(title = 'SparkBot')
         embed.set_thumbnail(url = self.bot.user.avatar_url)
-        embed.add_field(name = 'Version', value = f'{version}', inline = True)
+        embed.add_field(name = 'Version', value = self.config['version'], inline = True)
         embed.add_field(name = 'Info', value = f'Running on the Server: {ctx.message.author.guild.name}', inline = False)
         embed.add_field(name = 'Stats', value = f'Discord API Latency: {(self.bot.latency * 1000):.2f}ms', inline = False)
         embed.set_footer(icon_url = ctx.author.avatar_url, text = f'Queried by {ctx.author.display_name}')

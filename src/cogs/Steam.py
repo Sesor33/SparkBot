@@ -32,7 +32,7 @@ class Steam(commands.Cog):
                 else:
                     await ctx.send(f"Error, AppID: {appID} not found")
 
-            #TODO: Error handling outside of saying app not found        
+            #TODO: Error handling outside of saying app not found
             async with session.get(steamSpyRequestURL) as request:
                 if request.status == 200:
                     data = await request.json()
